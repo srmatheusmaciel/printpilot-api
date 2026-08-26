@@ -1,4 +1,7 @@
-package br.com.printpilot.material;
+package br.com.printpilot.dto.material;
+
+import br.com.printpilot.entity.Material;
+import br.com.printpilot.enums.UnitMeasure;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

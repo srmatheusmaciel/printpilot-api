@@ -1,5 +1,6 @@
-package br.com.printpilot.material;
+package br.com.printpilot.dto.material;
 
+import br.com.printpilot.enums.UnitMeasure;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,5 +1,6 @@
-package br.com.printpilot.material;
+package br.com.printpilot.entity;
 
+import br.com.printpilot.enums.PricingType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,17 +17,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "materials")
+@Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Material {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +35,12 @@ public class Material {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "unit_measure", nullable = false, length = 50)
-    private UnitMeasure unitMeasure;
+    @Column(length = 500)
+    private String description;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal cost;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pricing_type", nullable = false, length = 30)
+    private PricingType pricingType;
 
     @Column(nullable = false)
     private Boolean active;

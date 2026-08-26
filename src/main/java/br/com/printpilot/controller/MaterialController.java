@@ -1,5 +1,8 @@
-package br.com.printpilot.material;
+package br.com.printpilot.controller;
 
+import br.com.printpilot.dto.material.MaterialRequest;
+import br.com.printpilot.dto.material.MaterialResponse;
+import br.com.printpilot.service.MaterialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

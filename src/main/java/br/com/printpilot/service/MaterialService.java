@@ -1,5 +1,9 @@
-package br.com.printpilot.material;
+package br.com.printpilot.service;
 
+import br.com.printpilot.dto.material.MaterialRequest;
+import br.com.printpilot.dto.material.MaterialResponse;
+import br.com.printpilot.entity.Material;
+import br.com.printpilot.repository.MaterialRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,15 +40,13 @@ public class MaterialService {
 
     @Transactional(readOnly = true)
     public MaterialResponse findById(Long id) {
-        Material material = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material não encontrado"));
+        Material material = findEntityById(id);
         return MaterialResponse.fromEntity(material);
     }
 
     @Transactional
     public MaterialResponse update(Long id, MaterialRequest request) {
-        Material material = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material não encontrado"));
+        Material material = findEntityById(id);
 
         material.setName(request.name());
         material.setUnitMeasure(request.unitMeasure());
@@ -55,5 +57,10 @@ public class MaterialService {
 
         Material updated = repository.save(material);
         return MaterialResponse.fromEntity(updated);
+    }
+
+    private Material findEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material não encontrado"));
     }
 }
