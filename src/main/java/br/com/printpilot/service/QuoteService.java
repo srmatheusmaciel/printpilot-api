@@ -4,6 +4,8 @@ import br.com.printpilot.dto.quote.AreaQuoteCalculationRequest;
 import br.com.printpilot.dto.quote.CreateQuoteRequest;
 import br.com.printpilot.dto.quote.QuoteCalculationResponse;
 import br.com.printpilot.dto.quote.QuoteResponse;
+import br.com.printpilot.entity.Customer;
+import br.com.printpilot.repository.CustomerRepository;
 import br.com.printpilot.entity.Material;
 import br.com.printpilot.entity.Product;
 import br.com.printpilot.entity.Quote;
@@ -27,6 +29,7 @@ public class QuoteService {
     private final QuoteCalculationService calculationService;
     private final ProductRepository productRepository;
     private final MaterialRepository materialRepository;
+    private final CustomerRepository customerRepository;
 
     @Transactional
     public QuoteResponse create(CreateQuoteRequest request) {
@@ -52,10 +55,23 @@ public class QuoteService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Material não encontrado: id=" + request.materialId()));
 
+        Customer customer = null;
+        if (request.customerId() != null) {
+            customer = customerRepository.findById(request.customerId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Cliente não encontrado: id=" + request.customerId()));
+            
+            if (!customer.getActive()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Cliente inativo não pode criar orçamentos: id=" + request.customerId());
+            }
+        }
+
         // Constrói Quote copiando snapshots e valores calculados
         Quote quote = Quote.builder()
                 .product(product)
                 .material(material)
+                .customer(customer)
                 // Snapshots de nome — imutáveis para orçamentos históricos
                 .productName(product.getName())
                 .materialName(material.getName())
@@ -102,5 +118,12 @@ public class QuoteService {
         return quoteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Orçamento não encontrado: id=" + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuoteResponse> findAllByCustomerId(Long customerId) {
+        return quoteRepository.findAllByCustomerId(customerId).stream()
+                .map(QuoteResponse::fromEntity)
+                .toList();
     }
 }

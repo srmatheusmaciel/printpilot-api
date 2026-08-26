@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 public record QuoteResponse(
         Long id,
 
+        Long customerId,
+        String customerName,
+
         Long productId,
         String productName,
 
@@ -44,6 +47,9 @@ public record QuoteResponse(
     public static QuoteResponse fromEntity(Quote quote) {
         return new QuoteResponse(
                 quote.getId(),
+
+                quote.getCustomer() != null ? quote.getCustomer().getId() : null,
+                quote.getCustomer() != null ? quote.getCustomer().getName() : null,
 
                 quote.getProduct().getId(),
                 quote.getProductName(),

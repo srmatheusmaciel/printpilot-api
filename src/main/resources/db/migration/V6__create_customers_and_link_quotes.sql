@@ -1,0 +1,18 @@
+CREATE TABLE customers (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    document VARCHAR(20),
+    email VARCHAR(150),
+    phone VARCHAR(30),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE quotes
+ADD COLUMN customer_id BIGINT;
+
+ALTER TABLE quotes
+ADD CONSTRAINT fk_quote_customer
+FOREIGN KEY (customer_id)
+REFERENCES customers(id);
