@@ -47,10 +47,11 @@ IA interpreta pedido → Backend (Pricing Engine) calcula os valores
 ✅ Persistência de orçamentos  
 ✅ Gerenciamento de clientes (Customer)  
 ✅ Histórico de orçamentos por cliente  
+✅ Pricing Engine AREA
+✅ Pricing Engine QUANTITY
 
 🚧 **Em desenvolvimento / Planejado:**
 - Interpretador IA de pedidos
-- Cálculo de orçamento por Quantidade (`PricingType.QUANTITY`)
 - Autenticação
 - Exportação de orçamento em PDF
 - Gestão de clientes
@@ -64,7 +65,9 @@ IA interpreta pedido → Backend (Pricing Engine) calcula os valores
 Cadastro dos insumos utilizados na gráfica, com especificação da unidade de medida (ex.: m², unidades) e custo base.
 
 ### Products
-Cadastro dos produtos que a gráfica vende (ex.: Banners, Adesivos, Cartões). Os produtos ditam a estratégia de precificação (`AREA` ou `QUANTITY`).
+Cadastro dos produtos que a gráfica vende. Os produtos ditam a estratégia de precificação:
+* `PricingType.AREA` (ex.: Banners, Adesivos)
+* `PricingType.QUANTITY` (ex.: Cartão de visita, Panfleto)
 
 ### Finishings
 Cadastro de acabamentos opcionais com modelos de custo flexíveis (por unidade, por área ou fixo). Ex.: Ilhós, Laminação, Verniz.
@@ -94,6 +97,26 @@ O breakdown financeiro acontece da seguinte forma:
 - *UNIT*: `cost × quantity_informada`
 - *AREA*: `cost × totalArea`
 - *FIXED*: `cost`
+
+**Cálculos Finais**:
+- **wasteCost** = `(materialCost + printingCost) × (wastePercentage / 100)`
+- **totalCost** = `materialCost + printingCost + finishingCost + wasteCost + laborCost`
+- **suggestedPrice** = `totalCost / (1 - marginPercentage / 100)`
+
+---
+
+## Fórmulas do Pricing Engine (PricingType.QUANTITY)
+
+Para produtos calculados por quantidade (ex: Cartão de visita, Panfleto), utilizamos folhas inteiras:
+
+- **requiredSheets** = `ArredondaParaCima( quantity / unitsPerSheet )`
+- **materialCost** = `requiredSheets × material.cost`
+- **printingCost** = `quantity × printingCostPerUnit`
+
+**Acabamentos (`FinishingPricingType`)**:
+- *UNIT*: `cost × quantity_informada`
+- *FIXED*: `cost`
+*(Acabamentos por AREA não são suportados em orçamentos QUANTITY)*
 
 **Cálculos Finais**:
 - **wasteCost** = `(materialCost + printingCost) × (wastePercentage / 100)`
@@ -225,7 +248,7 @@ Com o projeto em execução localmente, os seguintes endereços estarão dispon�
 - [x] Quote persistence
 - [x] Customer management
 - [x] Customer quote history
-- [ ] QUANTITY Pricing Engine
+- [x] QUANTITY Pricing Engine
 - [ ] IA para interpretação de pedidos
 - [ ] PDF de orçamento
 - [ ] Autenticação e Autorização (Spring Security)

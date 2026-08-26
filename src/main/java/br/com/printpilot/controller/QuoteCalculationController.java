@@ -25,4 +25,10 @@ public class QuoteCalculationController {
     public QuoteCalculationResponse calculate(@Valid @RequestBody AreaQuoteCalculationRequest request) {
         return service.calculate(request);
     }
+
+    @PostMapping("/calculate/quantity")
+    @Operation(summary = "Calcular orçamento QUANTITY", description = "Calcula um orçamento para produtos precificados por quantidade sem persistir o resultado.")
+    public br.com.printpilot.dto.quote.QuantityQuoteCalculationResponse calculateQuantity(@Valid @RequestBody br.com.printpilot.dto.quote.QuantityQuoteCalculationRequest request) {
+        return service.calculateQuantity(request);
+    }
 }
