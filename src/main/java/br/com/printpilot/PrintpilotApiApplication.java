@@ -1,4 +1,4 @@
-package br.com.printpilot.printpilot_api;
+package br.com.printpilot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PrintpilotApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PrintpilotApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PrintpilotApiApplication.class, args);
+    }
 
 }
