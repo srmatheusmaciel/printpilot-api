@@ -34,3 +34,8 @@ build/
 
 ### Environment Variables ###
 .env
+.env.sonar
+.scannerwork/
+app.log
+cp.txt
+*.pdf

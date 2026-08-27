@@ -227,10 +227,19 @@ Migrations atuais do projeto:
    ./mvnw spring-boot:run
    ```
 
-5. **Executando Testes**
+5. **Executando Testes e Medindo Cobertura**
+   
+   A aplicação possui uma suíte de testes automatizados e gera relatórios de cobertura via JaCoCo.
+   Para apenas rodar os testes:
    ```bash
    ./mvnw clean test
    ```
+   Para rodar os testes e gerar o relatório de cobertura:
+   ```bash
+   ./mvnw clean verify
+   ```
+   O relatório JaCoCo é gerado em:
+   `target/site/jacoco/index.html`
 
 *(Opcional)* Acesso direto ao PostgreSQL via Docker:
 ```bash
