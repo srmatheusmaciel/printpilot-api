@@ -280,6 +280,9 @@ Com o projeto em execução localmente, os seguintes endereços estarão dispon�
 - [x] Negotiated final price
 - [x] Quote PDF generation
 - [x] Natural-language print request interpretation
+- [x] Interpretação de pedidos em linguagem natural com Google ADK + Gemini
+- [x] Resolução de Product, Material e Finishing contra o catálogo real
+- [x] Tratamento de catálogo com RESOLVED, AMBIGUOUS e NOT_FOUND
 - [ ] Autenticação e Autorização (Spring Security)
 - [ ] Frontend integration
 
