@@ -1,0 +1,27 @@
+ALTER TABLE quotes
+ADD COLUMN pricing_type VARCHAR(30);
+
+UPDATE quotes
+SET pricing_type = 'AREA'
+WHERE pricing_type IS NULL;
+
+ALTER TABLE quotes
+ALTER COLUMN pricing_type SET NOT NULL;
+
+ALTER TABLE quotes
+ALTER COLUMN width DROP NOT NULL;
+
+ALTER TABLE quotes
+ALTER COLUMN height DROP NOT NULL;
+
+ALTER TABLE quotes
+ALTER COLUMN unit_area DROP NOT NULL;
+
+ALTER TABLE quotes
+ALTER COLUMN total_area DROP NOT NULL;
+
+ALTER TABLE quotes
+ADD COLUMN units_per_sheet INTEGER;
+
+ALTER TABLE quotes
+ADD COLUMN required_sheets INTEGER;

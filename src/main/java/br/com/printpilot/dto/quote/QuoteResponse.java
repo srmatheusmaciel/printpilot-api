@@ -18,6 +18,8 @@ public record QuoteResponse(
         Long materialId,
         String materialName,
 
+        br.com.printpilot.enums.PricingType pricingType,
+
         Integer quantity,
 
         BigDecimal width,
@@ -25,6 +27,9 @@ public record QuoteResponse(
 
         BigDecimal unitArea,
         BigDecimal totalArea,
+
+        Integer unitsPerSheet,
+        Integer requiredSheets,
 
         BigDecimal materialCost,
         BigDecimal printingCost,
@@ -57,6 +62,8 @@ public record QuoteResponse(
                 quote.getMaterial().getId(),
                 quote.getMaterialName(),
 
+                quote.getPricingType(),
+
                 quote.getQuantity(),
 
                 quote.getWidth(),
@@ -64,6 +71,9 @@ public record QuoteResponse(
 
                 quote.getUnitArea(),
                 quote.getTotalArea(),
+
+                quote.getUnitsPerSheet(),
+                quote.getRequiredSheets(),
 
                 quote.getMaterialCost(),
                 quote.getPrintingCost(),

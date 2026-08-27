@@ -79,7 +79,17 @@ Configurações de custo (impressão, mão de obra, percentuais de margem e desp
 Motor determinístico responsável por compilar todas as regras e insumos, resultando em um breakdown preciso de todos os custos até chegar no preço sugerido.
 
 ### Quotes
-Módulo que processa simulações através do Pricing Engine e cria versões permanentes do orçamento (snapshots). Isso garante que mudanças futuras nos custos não alterem o histórico de orçamentos aprovados. Um Quote pode ser associado opcionalmente a um Customer.
+Módulo que processa simulações através do Pricing Engine e cria versões permanentes do orçamento (snapshots). Isso garante que mudanças futuras nos custos não alterem o histórico de orçamentos aprovados. Um Quote pode ser associado opcionalmente a um Customer. 
+
+O Quote suporta dois modelos de cálculo integrados na mesma tabela:
+- **AREA**: baseia-se em dimensões, área total e m².
+- **QUANTITY**: baseia-se em quantidade solicitada, aproveitamento por folha e total de folhas necessárias.
+
+Além disso, todo Quote armazena dois valores distintos:
+- **suggestedPrice**: o valor que o Pricing Engine computou matematicamente (não é alterado após a persistência).
+- **finalPrice**: o valor comercial negociado de fato (podendo sofrer acréscimos ou descontos durante o ciclo).
+
+O ciclo de vida do Quote respeita a máquina de estados: `DRAFT` → `SENT` → `APPROVED` / `REJECTED` / `EXPIRED`. Alterações de preço final só são permitidas antes da conclusão (em `DRAFT` ou `SENT`).
 
 ---
 
@@ -245,10 +255,13 @@ Com o projeto em execução localmente, os seguintes endereços estarão dispon�
 - [x] Finishings
 - [x] Area Pricing Rules
 - [x] AREA Pricing Engine
-- [x] Quote persistence
+- [x] Persistência de Quote AREA
 - [x] Customer management
 - [x] Customer quote history
 - [x] QUANTITY Pricing Engine
+- [x] Persistência de Quote QUANTITY
+- [x] Quote lifecycle
+- [x] Negotiated final price
 - [ ] IA para interpretação de pedidos
 - [ ] PDF de orçamento
 - [ ] Autenticação e Autorização (Spring Security)

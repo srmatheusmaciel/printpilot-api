@@ -1,5 +1,6 @@
 package br.com.printpilot.entity;
 
+import br.com.printpilot.enums.PricingType;
 import br.com.printpilot.enums.QuoteStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,20 +58,30 @@ public class Quote {
     @Column(name = "material_name", nullable = false, length = 150)
     private String materialName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pricing_type", nullable = false, length = 30)
+    private PricingType pricingType;
+
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false, precision = 12, scale = 4)
+    @Column(precision = 12, scale = 4)
     private BigDecimal width;
 
-    @Column(nullable = false, precision = 12, scale = 4)
+    @Column(precision = 12, scale = 4)
     private BigDecimal height;
 
-    @Column(name = "unit_area", nullable = false, precision = 12, scale = 4)
+    @Column(name = "unit_area", precision = 12, scale = 4)
     private BigDecimal unitArea;
 
-    @Column(name = "total_area", nullable = false, precision = 12, scale = 4)
+    @Column(name = "total_area", precision = 12, scale = 4)
     private BigDecimal totalArea;
+
+    @Column(name = "units_per_sheet")
+    private Integer unitsPerSheet;
+
+    @Column(name = "required_sheets")
+    private Integer requiredSheets;
 
     // Componentes financeiros calculados pelo Pricing Engine
     @Column(name = "material_cost", nullable = false, precision = 12, scale = 2)

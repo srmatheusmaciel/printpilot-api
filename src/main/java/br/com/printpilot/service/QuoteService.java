@@ -69,6 +69,7 @@ public class QuoteService {
 
         // Constrói Quote copiando snapshots e valores calculados
         Quote quote = Quote.builder()
+                .pricingType(br.com.printpilot.enums.PricingType.AREA)
                 .product(product)
                 .material(material)
                 .customer(customer)
@@ -125,5 +126,113 @@ public class QuoteService {
         return quoteRepository.findAllByCustomerId(customerId).stream()
                 .map(QuoteResponse::fromEntity)
                 .toList();
+    }
+
+    @Transactional
+    public QuoteResponse createQuantity(br.com.printpilot.dto.quote.CreateQuantityQuoteRequest request) {
+        br.com.printpilot.dto.quote.QuantityQuoteCalculationRequest calcRequest = new br.com.printpilot.dto.quote.QuantityQuoteCalculationRequest(
+                request.productId(),
+                request.materialId(),
+                request.quantity(),
+                request.finishings()
+        );
+
+        br.com.printpilot.dto.quote.QuantityQuoteCalculationResponse calculated = calculationService.calculateQuantity(calcRequest);
+
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Produto não encontrado: id=" + request.productId()));
+
+        Material material = materialRepository.findById(request.materialId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Material não encontrado: id=" + request.materialId()));
+
+        Customer customer = null;
+        if (request.customerId() != null) {
+            customer = customerRepository.findById(request.customerId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Cliente não encontrado: id=" + request.customerId()));
+
+            if (!customer.getActive()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Cliente inativo não pode criar orçamentos: id=" + request.customerId());
+            }
+        }
+
+        Quote quote = Quote.builder()
+                .pricingType(br.com.printpilot.enums.PricingType.QUANTITY)
+                .product(product)
+                .material(material)
+                .customer(customer)
+                .productName(product.getName())
+                .materialName(material.getName())
+                .quantity(calculated.quantity())
+                .unitsPerSheet(calculated.unitsPerSheet())
+                .requiredSheets(calculated.requiredSheets())
+                .materialCost(calculated.materialCost())
+                .printingCost(calculated.printingCost())
+                .finishingCost(calculated.finishingCost())
+                .wasteCost(calculated.wasteCost())
+                .laborCost(calculated.laborCost())
+                .totalCost(calculated.totalCost())
+                .marginPercentage(calculated.marginPercentage())
+                .suggestedPrice(calculated.suggestedPrice())
+                .finalPrice(calculated.suggestedPrice())
+                .status(QuoteStatus.DRAFT)
+                .build();
+
+        Quote saved = quoteRepository.save(quote);
+        return QuoteResponse.fromEntity(saved);
+    }
+
+    @Transactional
+    public QuoteResponse updateStatus(Long quoteId, br.com.printpilot.dto.quote.UpdateQuoteStatusRequest request) {
+        Quote quote = quoteRepository.findById(quoteId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Orçamento não encontrado: id=" + quoteId));
+
+        QuoteStatus currentStatus = quote.getStatus();
+        QuoteStatus newStatus = request.status();
+
+        if (currentStatus == newStatus) {
+            return QuoteResponse.fromEntity(quote);
+        }
+
+        validateStatusTransition(currentStatus, newStatus);
+        
+        quote.setStatus(newStatus);
+        Quote saved = quoteRepository.save(quote);
+        return QuoteResponse.fromEntity(saved);
+    }
+
+    private void validateStatusTransition(QuoteStatus currentStatus, QuoteStatus newStatus) {
+        boolean isValid = switch (currentStatus) {
+            case DRAFT -> newStatus == QuoteStatus.SENT || newStatus == QuoteStatus.REJECTED || newStatus == QuoteStatus.EXPIRED;
+            case SENT -> newStatus == QuoteStatus.APPROVED || newStatus == QuoteStatus.REJECTED || newStatus == QuoteStatus.EXPIRED;
+            case APPROVED, REJECTED, EXPIRED -> false;
+        };
+
+        if (!isValid) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Transição de status inválida: " + currentStatus + " -> " + newStatus);
+        }
+    }
+
+    @Transactional
+    public QuoteResponse updateFinalPrice(Long quoteId, br.com.printpilot.dto.quote.UpdateQuoteFinalPriceRequest request) {
+        Quote quote = quoteRepository.findById(quoteId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Orçamento não encontrado: id=" + quoteId));
+
+        if (quote.getStatus() != QuoteStatus.DRAFT && quote.getStatus() != QuoteStatus.SENT) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Não é permitido alterar o preço de um orçamento no status: " + quote.getStatus());
+        }
+
+        quote.setFinalPrice(request.finalPrice());
+        Quote saved = quoteRepository.save(quote);
+        return QuoteResponse.fromEntity(saved);
     }
 }
