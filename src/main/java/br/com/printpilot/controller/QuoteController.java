@@ -26,6 +26,7 @@ import java.util.List;
 public class QuoteController {
 
     private final QuoteService service;
+    private final br.com.printpilot.service.QuotePdfService pdfService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -67,5 +68,19 @@ public class QuoteController {
             @PathVariable Long id,
             @Valid @RequestBody br.com.printpilot.dto.quote.UpdateQuoteFinalPriceRequest request) {
         return service.updateFinalPrice(id, request);
+    }
+
+    @GetMapping(value = "/{id}/pdf", produces = org.springframework.http.MediaType.APPLICATION_PDF_VALUE)
+    @Operation(summary = "Gerar PDF", description = "Generates the commercial PDF for an existing quote.")
+    public org.springframework.http.ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
+        byte[] pdf = pdfService.generatePdf(id);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(org.springframework.http.ContentDisposition.inline().filename("orcamento-" + id + ".pdf").build());
+
+        return org.springframework.http.ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
     }
 }

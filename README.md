@@ -91,6 +91,8 @@ Além disso, todo Quote armazena dois valores distintos:
 
 O ciclo de vida do Quote respeita a máquina de estados: `DRAFT` → `SENT` → `APPROVED` / `REJECTED` / `EXPIRED`. Alterações de preço final só são permitidas antes da conclusão (em `DRAFT` ou `SENT`).
 
+**PDF**: É possível gerar o orçamento comercial em formato PDF, pronto para download/visualização (`GET /api/quotes/{id}/pdf`). O documento inclui dados do cliente, detalhamento do produto e os valores comerciais.
+
 ---
 
 ## Fórmulas do Pricing Engine (PricingType.AREA)
@@ -262,8 +264,8 @@ Com o projeto em execução localmente, os seguintes endereços estarão dispon�
 - [x] Persistência de Quote QUANTITY
 - [x] Quote lifecycle
 - [x] Negotiated final price
+- [x] Quote PDF generation
 - [ ] IA para interpretação de pedidos
-- [ ] PDF de orçamento
 - [ ] Autenticação e Autorização (Spring Security)
 - [ ] Frontend integration
 
