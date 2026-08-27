@@ -1,0 +1,15 @@
+package br.com.printpilot.dto.ai;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AiFinishingInterpretation {
+    private String name;
+    private Integer quantity;
+}

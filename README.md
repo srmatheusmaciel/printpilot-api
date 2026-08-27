@@ -49,9 +49,9 @@ IA interpreta pedido → Backend (Pricing Engine) calcula os valores
 ✅ Histórico de orçamentos por cliente  
 ✅ Pricing Engine AREA
 ✅ Pricing Engine QUANTITY
+✅ Interpretador IA de pedidos (Natural-language print request interpretation)
 
 🚧 **Em desenvolvimento / Planejado:**
-- Interpretador IA de pedidos
 - Autenticação
 - Exportação de orçamento em PDF
 - Gestão de clientes
@@ -210,6 +210,11 @@ Migrations atuais do projeto:
    POSTGRES_USER=printpilot
    POSTGRES_PASSWORD=your_password
    POSTGRES_PORT=5434
+   
+   # IA (Google AI Studio)
+   GOOGLE_GENAI_USE_ENTERPRISE=FALSE
+   GOOGLE_API_KEY=your-google-ai-studio-api-key
+   AI_MODEL=gemini-3.5-flash-lite
    ```
 
 3. **Iniciando o banco de dados via Docker**
@@ -274,7 +279,7 @@ Com o projeto em execução localmente, os seguintes endereços estarão dispon�
 - [x] Quote lifecycle
 - [x] Negotiated final price
 - [x] Quote PDF generation
-- [ ] IA para interpretação de pedidos
+- [x] Natural-language print request interpretation
 - [ ] Autenticação e Autorização (Spring Security)
 - [ ] Frontend integration
 
